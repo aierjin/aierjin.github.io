@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>你的名字 · 个人主页</title>
+<meta name="description" content="个人主页 — 代码、数据、攀岩" />
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --bg-soft: #121826;
+    --card: #161d2e;
+    --text: #e6ebf5;
+    --muted: #93a0b8;
+    --accent: #6ee7ff;
+    --accent2: #a78bfa;
+    --border: rgba(255, 255, 255, 0.08);
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* 背景光斑 */
+  .glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.5;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .glow.a { width: 480px; height: 480px; background: #1f4d6b; top: -120px; left: -80px; }
+  .glow.b { width: 420px; height: 420px; background: #4a2f7a; bottom: -120px; right: -60px; }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* 导航 */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 15, 26, 0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-weight: 700; letter-spacing: 0.5px; }
+  .logo span { color: var(--accent); }
+  .navlinks { display: flex; gap: 22px; font-size: 14px; }
+  .navlinks a { color: var(--muted); transition: color 0.2s; }
+  .navlinks a:hover { color: var(--text); }
+  @media (max-width: 620px) { .navlinks { display: none; } }
+
+  /* Hero */
+  header.hero { padding: 110px 0 90px; text-align: center; }
+  .avatar {
+    width: 110px; height: 110px; border-radius: 50%;
+    margin: 0 auto 28px;
+    display: grid; place-items: center;
+    font-size: 38px; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #0b0f1a;
+    box-shadow: var(--shadow);
+  }
+  .hero h1 { font-size: 44px; line-height: 1.2; margin-bottom: 14px; }
+  .hero h1 .grad {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p.tag { color: var(--muted); font-size: 18px; margin-bottom: 30px; }
+  .hero p.tag b { color: var(--text); font-weight: 600; }
+  .cta { display: inline-flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    padding: 12px 24px; border-radius: 10px; font-size: 15px; font-weight: 600;
+    border: 1px solid var(--border); transition: transform 0.15s, border-color 0.2s;
+  }
+  .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #0b0f1a; border: none; }
+  .btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+
+  /* 区块 */
+  section { padding: 70px 0; }
+  .sec-title { font-size: 28px; margin-bottom: 8px; }
+  .sec-sub { color: var(--muted); margin-bottom: 36px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 26px; box-shadow: var(--shadow);
+  }
+
+  /* About */
+  .about p { color: var(--muted); font-size: 16px; }
+  .about p + p { margin-top: 14px; }
+
+  /* Skills */
+  .skills { display: flex; flex-wrap: wrap; gap: 12px; }
+  .chip {
+    padding: 8px 16px; border-radius: 999px; font-size: 14px;
+    background: var(--bg-soft); border: 1px solid var(--border); color: var(--text);
+  }
+
+  /* Projects */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .proj { transition: transform 0.18s, border-color 0.2s; }
+  .proj:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .proj h3 { font-size: 18px; margin-bottom: 8px; }
+  .proj p { color: var(--muted); font-size: 14px; }
+  .proj .link { margin-top: 14px; display: inline-block; color: var(--accent); font-size: 14px; font-weight: 600; }
+
+  /* Contact */
+  .contact { text-align: center; }
+  .links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+
+  footer { text-align: center; padding: 40px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); }
+
+  /* 滚动出现动画 */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+  <div class="glow a"></div>
+  <div class="glow b"></div>
+
+  <nav>
+    <div class="wrap">
+      <div class="logo">你的<span>名字</span></div>
+      <div class="navlinks">
+        <a href="#about">关于</a>
+        <a href="#skills">技能</a>
+        <a href="#projects">项目</a>
+        <a href="#contact">联系</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="avatar">Y</div>
+      <!-- TODO: 把 "你的名字" 换成你的真实名字；头像可换成自己的图片 -->
+      <h1>你好，我是 <span class="grad">你的名字</span></h1>
+      <p class="tag">写代码 · 玩数据 · <b>抱石攀岩</b></p>
+      <div class="cta">
+        <a class="btn primary" href="#projects">看我的项目</a>
+        <a class="btn" href="#contact">联系我</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="about" class="about">
+    <div class="wrap reveal">
+      <h2 class="sec-title">关于我</h2>
+      <p class="sec-sub">一句话简介，让人快速认识你</p>
+      <div class="card">
+        <!-- TODO: 替换为你的真实自我介绍。注意：按你的要求，不写学校和具体专业 -->
+        <p>我现居香港，平时写写代码、捣鼓数据，也喜欢在岩壁上消磨周末。</p>
+        <p>这个页面是我的小角落 —— 放着一些练手的项目和能跑的小玩具。右边那只贪吃蛇就是其中之一。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap reveal">
+      <h2 class="sec-title">技能</h2>
+      <p class="sec-sub">我常用的工具与技术</p>
+      <div class="skills">
+        <span class="chip">Python</span>
+        <span class="chip">JavaScript</span>
+        <span class="chip">HTML / CSS</span>
+        <span class="chip">数据可视化</span>
+        <span class="chip">Git</span>
+        <span class="chip">算法</span>
+        <!-- TODO: 增删你的技能标签 -->
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap reveal">
+      <h2 class="sec-title">项目</h2>
+      <p class="sec-sub">一些我做过的小东西</p>
+      <div class="grid">
+        <a class="card proj" href="https://snake-game-93178.app.workbuddy.host/" target="_blank" rel="noopener">
+          <h3>🐍 贪吃蛇小游戏</h3>
+          <p>纯前端 Canvas 实现的网页贪吃蛇，支持键盘与触屏，带计分与最高分。</p>
+          <span class="link">在线试玩 →</span>
+        </a>
+        <div class="card proj">
+          <h3>你的项目二</h3>
+          <p><!-- TODO: 写一句话介绍你的第二个项目 -->占位说明，替换成你的项目。</p>
+          <span class="link">TODO: 加链接</span>
+        </div>
+        <div class="card proj">
+          <h3>你的项目三</h3>
+          <p><!-- TODO: 写一句话介绍你的第三个项目 -->占位说明，替换成你的项目。</p>
+          <span class="link">TODO: 加链接</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap reveal">
+      <h2 class="sec-title">联系我</h2>
+      <p class="sec-sub">欢迎来聊聊</p>
+      <div class="links">
+        <!-- TODO: 替换成你自己的链接 -->
+        <a class="btn" href="mailto:you@example.com">邮箱</a>
+        <a class="btn" href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="#">其他链接</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">© <span id="year"></span> 你的名字 · 用 GitHub Pages 搭建</div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
